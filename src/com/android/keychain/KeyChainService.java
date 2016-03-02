@@ -72,6 +72,8 @@ public class KeyChainService extends IntentService {
 
     private static final String SELECTION_GRANTS_BY_UID = GRANTS_GRANTEE_UID + "=?";
 
+    private static final String SELECTION_GRANTS_BY_ALIAS = GRANTS_ALIAS + "=?";
+
     public KeyChainService() {
         super(KeyChainService.class.getSimpleName());
     }
@@ -157,6 +159,9 @@ public class KeyChainService extends IntentService {
                         + " be installed until device is unlocked");
                 return false;
             }
+            if (!removeKeyPair(alias)) {
+                return false;
+            }
             if (!mKeyStore.importKey(Credentials.USER_PRIVATE_KEY + alias, privateKey, -1,
                     KeyStore.FLAG_ENCRYPTED)) {
                 Log.e(TAG, "Failed to import private key " + alias);
@@ -176,7 +181,12 @@ public class KeyChainService extends IntentService {
 
         @Override public boolean removeKeyPair(String alias) {
             checkCertInstallerOrSystemCaller();
-            return Credentials.deleteAllTypesForAlias(mKeyStore, alias);
+            if (!Credentials.deleteAllTypesForAlias(mKeyStore, alias)) {
+                return false;
+            }
+            removeGrantsForAlias(alias);
+            broadcastStorageChange();
+            return true;
         }
 
         private X509Certificate parseCertificate(byte[] bytes) throws CertificateException {
@@ -363,6 +373,11 @@ public class KeyChainService extends IntentService {
             db.delete(TABLE_GRANTS, SELECT_GRANTS_BY_UID_AND_ALIAS,
                     new String[]{String.valueOf(uid), alias});
         }
+    }
+
+    private void removeGrantsForAlias(String alias) {
+        final SQLiteDatabase db = mDatabaseHelper.getWritableDatabase();
+        db.delete(TABLE_GRANTS, SELECTION_GRANTS_BY_ALIAS, new String[] {alias});
     }
 
     private void removeAllGrants(final SQLiteDatabase db) {

@@ -16,6 +16,7 @@
 
 package com.android.keychain;
 
+import android.app.BroadcastOptions;
 import android.app.IntentService;
 import android.content.ContentValues;
 import android.content.Context;
@@ -27,6 +28,7 @@ import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Binder;
+import android.os.Build;
 import android.os.IBinder;
 import android.os.Process;
 import android.os.UserHandle;
@@ -151,7 +153,8 @@ public class KeyChainService extends IntentService {
             } catch (CertificateException e) {
                 throw new IllegalStateException(e);
             }
-            broadcastStorageChange();
+            broadcastLegacyStorageChange();
+            broadcastTrustStoreChange();
         }
 
         /**
@@ -198,7 +201,8 @@ public class KeyChainService extends IntentService {
                     return false;
                 }
             }
-            broadcastStorageChange();
+            broadcastKeychainChange();
+            broadcastLegacyStorageChange();
             return true;
         }
 
@@ -208,7 +212,8 @@ public class KeyChainService extends IntentService {
                 return false;
             }
             removeGrantsForAlias(alias);
-            broadcastStorageChange();
+            broadcastKeychainChange();
+            broadcastLegacyStorageChange();
             return true;
         }
 
@@ -232,7 +237,8 @@ public class KeyChainService extends IntentService {
                     }
                 }
             }
-            broadcastStorageChange();
+            broadcastTrustStoreChange();
+            broadcastLegacyStorageChange();
             return ok;
         }
 
@@ -243,7 +249,8 @@ public class KeyChainService extends IntentService {
             synchronized (mTrustedCertificateStore) {
                 ok = deleteCertificateEntry(alias);
             }
-            broadcastStorageChange();
+            broadcastTrustStoreChange();
+            broadcastLegacyStorageChange();
             return ok;
         }
 
@@ -289,7 +296,8 @@ public class KeyChainService extends IntentService {
         @Override public void setGrant(int uid, String alias, boolean value) {
             checkSystemCaller();
             setGrantInternal(mDatabaseHelper.getWritableDatabase(), uid, alias, value);
-            broadcastStorageChange();
+            broadcastPermissionChange(uid, alias, value);
+            broadcastLegacyStorageChange();
         }
 
         private ParceledListSlice<ParcelableString> makeAliasesParcelableSynchronised(
@@ -465,9 +473,37 @@ public class KeyChainService extends IntentService {
         }
     }
 
-    private void broadcastStorageChange() {
+    private void broadcastLegacyStorageChange() {
         Intent intent = new Intent(KeyChain.ACTION_STORAGE_CHANGED);
-        sendBroadcastAsUser(intent, new UserHandle(UserHandle.myUserId()));
+        BroadcastOptions opts = BroadcastOptions.makeBasic();
+        // TODO: Make this N-MR1 once N-MR1 API is available.
+        opts.setMaxManifestReceiverApiLevel(Build.VERSION_CODES.N);
+        sendBroadcast(intent, null, opts.toBundle());
     }
 
+    private void broadcastKeychainChange() {
+        Intent intent = new Intent(KeyChain.ACTION_KEYCHAIN_CHANGED);
+        sendBroadcast(intent);
+    }
+
+    private void broadcastTrustStoreChange() {
+        Intent intent = new Intent(KeyChain.ACTION_TRUST_STORE_CHANGED);
+        sendBroadcast(intent);
+    }
+
+    private void broadcastPermissionChange(int uid, String alias, boolean access) {
+        // Since the permission change only impacts one uid only send to that uid's packages.
+        final PackageManager packageManager = getPackageManager();
+        String[] packages = packageManager.getPackagesForUid(uid);
+        if (packages == null) {
+            return;
+        }
+        for (String pckg : packages) {
+            Intent intent = new Intent(KeyChain.ACTION_KEY_ACCESS_CHANGED);
+            intent.putExtra(KeyChain.EXTRA_KEY_ALIAS, alias);
+            intent.putExtra(KeyChain.EXTRA_KEY_ACCESSIBLE, access);
+            intent.setPackage(pckg);
+            sendBroadcast(intent);
+        }
+    }
 }

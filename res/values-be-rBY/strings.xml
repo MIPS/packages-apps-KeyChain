@@ -24,5 +24,5 @@
     <string name="install_new_cert_message" msgid="4451971501142085495">"Вы можаце ўсталяваць файл PKCS#12 з пашырэннем %1$s або %2$s, якiя знаходзяцца на знешнiм назапашвальнiку."</string>
     <string name="install_new_cert_button_label" msgid="510732745267546907">"Усталяваць"</string>
     <string name="allow_button" msgid="5340501035618157678">"Дазволіць"</string>
-    <string name="deny_button" msgid="3766539809121892584">"Забараніць"</string>
+    <string name="deny_button" msgid="3766539809121892584">"Адмовіць"</string>
 </resources>

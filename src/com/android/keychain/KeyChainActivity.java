@@ -213,6 +213,7 @@ public class KeyChainActivity extends Activity {
         final ListView lv = (ListView) View.inflate(this, R.layout.cert_chooser, null);
         lv.addHeaderView(contextView, null, false);
         lv.addFooterView(footer, null, false);
+        lv.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         lv.setAdapter(adapter);
         builder.setView(lv);
 
@@ -220,6 +221,7 @@ public class KeyChainActivity extends Activity {
 
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     lv.setItemChecked(position, true);
+                    adapter.notifyDataSetChanged();
                 }
         });
 

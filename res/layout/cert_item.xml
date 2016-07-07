@@ -18,9 +18,10 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
-    android:paddingRight="?android:attr/scrollbarSize"
     android:background="?android:attr/selectableItemBackground"
-    android:padding="15dip"
+    android:minHeight="?android:attr/listPreferredItemHeight"
+    android:paddingStart="?android:attr/dialogPreferredPadding"
+    android:paddingEnd="?android:attr/dialogPreferredPadding"
     >
     <RelativeLayout
         android:layout_width="0px"

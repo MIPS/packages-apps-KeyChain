@@ -13,32 +13,10 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/cert_chooser_install_message"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    >
-    <View
-        android:layout_width="fill_parent"
-        android:layout_height="1dip"
-        android:background="@android:drawable/divider_horizontal_dark"
-    />
-    <TextView
-        android:id="@+id/cert_chooser_install_message"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="6dip"
-    />
-    <LinearLayout
-        android:gravity="right"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
-        <Button
-            android:id="@+id/cert_chooser_install_button"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:text="@string/install_new_cert_button_label"
-            android:layout_margin="6dip"
-        />
-    </LinearLayout>
-</LinearLayout>
+    android:paddingStart="?android:attr/dialogPreferredPadding"
+    android:paddingEnd="?android:attr/dialogPreferredPadding"
+/>

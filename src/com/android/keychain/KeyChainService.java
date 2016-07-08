@@ -476,8 +476,7 @@ public class KeyChainService extends IntentService {
     private void broadcastLegacyStorageChange() {
         Intent intent = new Intent(KeyChain.ACTION_STORAGE_CHANGED);
         BroadcastOptions opts = BroadcastOptions.makeBasic();
-        // TODO: Make this N-MR1 once N-MR1 API is available.
-        opts.setMaxManifestReceiverApiLevel(Build.VERSION_CODES.N);
+        opts.setMaxManifestReceiverApiLevel(Build.VERSION_CODES.N_MR1);
         sendBroadcast(intent, null, opts.toBundle());
     }
 

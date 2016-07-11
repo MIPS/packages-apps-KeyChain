@@ -18,4 +18,5 @@
     android:layout_height="wrap_content"
     android:paddingStart="?android:attr/dialogPreferredPadding"
     android:paddingEnd="?android:attr/dialogPreferredPadding"
+    android:paddingBottom="20dp"
 />

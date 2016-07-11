@@ -209,7 +209,7 @@ public class KeyChainActivity extends Activity {
 
         boolean empty = adapter.mAliases.isEmpty();
         int negativeLabel = empty ? android.R.string.cancel : R.string.deny_button;
-        builder.setNeutralButton(negativeLabel, new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(negativeLabel, new DialogInterface.OnClickListener() {
             @Override public void onClick(DialogInterface dialog, int id) {
                 dialog.cancel(); // will cause OnDismissListener to be called
             }
@@ -255,29 +255,30 @@ public class KeyChainActivity extends Activity {
         }
         builder.setTitle(title);
         builder.setSingleChoiceItems(adapter, selectedItem, null);
-        builder.setNegativeButton(R.string.install_new_cert_button_label,
-                new DialogInterface.OnClickListener() {
-                    @Override public void onClick(DialogInterface dialog, int id) {
-                        // remove dialog so that we will recreate with
-                        // possibly new content after install returns
-                        dialog.dismiss();
-                        Credentials.getInstance().install(KeyChainActivity.this);
-                    }
-                });
         final AlertDialog dialog = builder.create();
 
-        // Show text above and below the list, to explain what the certificate will be used for
-        // and how to install another one respectively.
+        // Show text above and below the list to explain what the certificate will be used for,
+        // and how to install another one, respectively.
         TextView contextView = (TextView) View.inflate(this, R.layout.cert_chooser_header, null);
-        TextView installText = (TextView) View.inflate(this, R.layout.cert_chooser_footer, null);
 
         final ListView lv = dialog.getListView();
         lv.addHeaderView(contextView, null, false);
-        lv.addFooterView(installText, null, false);
+        lv.addFooterView(View.inflate(this, R.layout.cert_install, null));
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                lv.setItemChecked(position, true);
-                adapter.notifyDataSetChanged();
+                if (position == 0) {
+                    // Header. Just text; ignore clicks.
+                    return;
+                } else if (position == adapter.getCount() + 1) {
+                    // Footer. Remove dialog so that we will recreate with possibly new content
+                    // after install returns.
+                    dialog.dismiss();
+                    Credentials.getInstance().install(KeyChainActivity.this);
+                } else {
+                    dialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(true);
+                    lv.setItemChecked(position, true);
+                    adapter.notifyDataSetChanged();
+                }
             }
         });
 
@@ -307,10 +308,14 @@ public class KeyChainActivity extends Activity {
         }
         contextView.setText(contextMessage);
 
-        String installMessage = String.format(res.getString(R.string.install_new_cert_message),
-                                              Credentials.EXTENSION_PFX, Credentials.EXTENSION_P12);
-        installText.setText(installMessage);
-
+        if (selectedItem == -1) {
+            dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+                @Override
+                public void onShow(DialogInterface dialogInterface) {
+                     dialog.getButton(DialogInterface.BUTTON_POSITIVE).setEnabled(false);
+                }
+            });
+        }
         dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
             @Override public void onCancel(DialogInterface dialog) {
                 finish(null);

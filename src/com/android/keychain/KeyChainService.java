@@ -477,17 +477,17 @@ public class KeyChainService extends IntentService {
         Intent intent = new Intent(KeyChain.ACTION_STORAGE_CHANGED);
         BroadcastOptions opts = BroadcastOptions.makeBasic();
         opts.setMaxManifestReceiverApiLevel(Build.VERSION_CODES.N_MR1);
-        sendBroadcast(intent, null, opts.toBundle());
+        sendBroadcastAsUser(intent, UserHandle.of(UserHandle.myUserId()), null, opts.toBundle());
     }
 
     private void broadcastKeychainChange() {
         Intent intent = new Intent(KeyChain.ACTION_KEYCHAIN_CHANGED);
-        sendBroadcast(intent);
+        sendBroadcastAsUser(intent, UserHandle.of(UserHandle.myUserId()));
     }
 
     private void broadcastTrustStoreChange() {
         Intent intent = new Intent(KeyChain.ACTION_TRUST_STORE_CHANGED);
-        sendBroadcast(intent);
+        sendBroadcastAsUser(intent, UserHandle.of(UserHandle.myUserId()));
     }
 
     private void broadcastPermissionChange(int uid, String alias, boolean access) {
@@ -502,7 +502,7 @@ public class KeyChainService extends IntentService {
             intent.putExtra(KeyChain.EXTRA_KEY_ALIAS, alias);
             intent.putExtra(KeyChain.EXTRA_KEY_ACCESSIBLE, access);
             intent.setPackage(pckg);
-            sendBroadcast(intent);
+            sendBroadcastAsUser(intent, UserHandle.of(UserHandle.myUserId()));
         }
     }
 }

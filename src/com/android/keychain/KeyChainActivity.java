@@ -17,7 +17,6 @@
 package com.android.keychain;
 
 import android.app.Activity;
-import android.app.ActivityManagerNative;
 import android.app.admin.IDevicePolicyManager;
 import android.app.AlertDialog;
 import android.app.Dialog;

@@ -141,11 +141,14 @@ public class KeyChainService extends IntentService {
             }
         }
 
-        @Override public void installCaCertificate(byte[] caCertificate) {
+        @Override public String installCaCertificate(byte[] caCertificate) {
             checkCertInstallerOrSystemCaller();
+            final String alias;
             try {
+                final X509Certificate cert = parseCertificate(caCertificate);
                 synchronized (mTrustedCertificateStore) {
-                    mTrustedCertificateStore.installCertificate(parseCertificate(caCertificate));
+                    mTrustedCertificateStore.installCertificate(cert);
+                    alias = mTrustedCertificateStore.getCertificateAlias(cert);
                 }
             } catch (IOException e) {
                 throw new IllegalStateException(e);
@@ -154,6 +157,7 @@ public class KeyChainService extends IntentService {
             }
             broadcastLegacyStorageChange();
             broadcastTrustStoreChange();
+            return alias;
         }
 
         /**

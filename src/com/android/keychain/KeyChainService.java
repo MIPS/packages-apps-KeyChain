@@ -241,6 +241,7 @@ public class KeyChainService extends IntentService {
                 }
             }
             broadcastTrustStoreChange();
+            broadcastKeychainChange();
             broadcastLegacyStorageChange();
             return ok;
         }

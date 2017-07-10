@@ -23,6 +23,6 @@
     <string name="requesting_server" msgid="5832565605998634370">"ಅಪ್ಲಿಕೇಶನ್‌ ವಿನಂತಿಸಿದ ಸರ್ವರ್‌ ಅನ್ನು %s ರಂತೆ ಗುರುತಿಸಿದೆ, ಆದರೆ ನೀವು ಅಪ್ಲಿಕೇಶನ್‌‌ ಅನ್ನು ನಂಬಿದರೆ ಮಾತ್ರ ಪ್ರಮಾಣಪತ್ರಕ್ಕೆ ಅಪ್ಲಿಕೇಶನ್‌ ಪ್ರವೇಶವನ್ನು ನೀಡಬೇಕು."</string>
     <string name="install_new_cert_message" msgid="4451971501142085495">"ಬಾಹ್ಯ ಸಂಗ್ರಹಣೆಯಲ್ಲಿ ಸಂಗ್ರಹವಾಗಿರುವ %1$s ಅಥವಾ %2$s ವಿಸ್ತರಣೆಯೊಂದಿಗೆ PKCS#12 ಫೈಲ್‌ನಿಂದ ನೀವು ಪ್ರಮಾಣಪತ್ರಗಳನ್ನು ಸ್ಥಾಪಿಸಬಹುದು."</string>
     <string name="install_new_cert_button_label" msgid="510732745267546907">"ಸ್ಥಾಪಿಸು"</string>
-    <string name="allow_button" msgid="5340501035618157678">"ಅನುಮತಿಸು"</string>
-    <string name="deny_button" msgid="3766539809121892584">"ನಿರಾಕರಿಸು"</string>
+    <string name="allow_button" msgid="5340501035618157678">"ಅನುಮತಿಸಿ"</string>
+    <string name="deny_button" msgid="3766539809121892584">"ನಿರಾಕರಿಸಿ"</string>
 </resources>
